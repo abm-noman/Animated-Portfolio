@@ -1,12 +1,14 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import Loader from "../components/Loader";
+import Bird from "../models/Bird";
 import Island from "../models/island";
+import Plane from "../models/Plane";
 import Sky from "../models/Sky";
 
 const Home = () => {
   const adjustIslandForScreenSize = () => {
-    let screenScale = null; 
+    let screenScale = null;
     let screenPosition = [0, -6.5, -43];
     let screenRotation = [0.1, 4.7, 0];
 
@@ -18,10 +20,11 @@ const Home = () => {
       screenScale = [1, 1, 1];
     }
 
-    return [ screenScale, screenPosition, screenRotation ];
-  }
+    return [screenScale, screenPosition, screenRotation];
+  };
 
-  const [islandScale, islandPosition, islandRotation] = adjustIslandForScreenSize();
+  const [islandScale, islandPosition, islandRotation] =
+    adjustIslandForScreenSize();
 
   return (
     <section className="w-full h-screen flex items-center justify-center">
@@ -31,23 +34,37 @@ const Home = () => {
 
       <Canvas
         className="w-full h-screen bg-transparent"
-        camera={{ near : 0.1, far: 1000, fov: 75, position: [0, 0, 5] }}
+        camera={{ near: 0.1, far: 1000, fov: 75, position: [0, 0, 5] }}
       >
-        <Suspense fallback={ <Loader /> }>
+        <Suspense fallback={<Loader />}>
           <directionalLight position={[0, 10, 5]} intensity={1} />
           <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 10]} intensity={1} />
-          <spotLight position={[0, 10, 0]} angle={0.3} penumbra={1} intensity={2} castShadow />
-          <hemisphereLight skyColor={0xffffff} groundColor={0x444444} intensity={0.5} />
+          <spotLight
+            position={[0, 10, 0]}
+            angle={0.3}
+            penumbra={1}
+            intensity={2}
+            castShadow
+          />
+          <hemisphereLight
+            skyColor={0xffffff}
+            groundColor={0x444444}
+            intensity={0.5}
+          />
+
+          <Bird />
 
           <Sky />
 
-          <Island 
-          position={islandPosition}
-          scale={islandScale}
-          screenRotation={islandRotation}/>
+          <Island
+            position={islandPosition}
+            scale={islandScale}
+            screenRotation={islandRotation}
+          />
+          
+          <Plane />
         </Suspense>
-
       </Canvas>
     </section>
   );
