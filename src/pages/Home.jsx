@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Loader from "../components/Loader";
 import Bird from "../models/Bird";
 import Island from "../models/island";
@@ -7,6 +7,9 @@ import Plane from "../models/Plane";
 import Sky from "../models/Sky";
 
 const Home = () => {
+  const [isRotating, setisRotating] = useState(false)
+
+
   const adjustIslandForScreenSize = () => {
     let screenScale = null;
     let screenPosition = [0, -6.5, -43];
