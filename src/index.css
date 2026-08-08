@@ -15,6 +15,10 @@
 }
 
 @layer utilities {
+  .header {
+    @apply flex justify-between items-center sm:px-16 px-8 py-4 max-w-5xl mx-auto absolute top-0 bg-transparent z-10 right-0 left-0;
+  }
+
   /* TYPOGRAPHY */
   .h1-bold {
     @apply text-[36px] font-bold leading-[140%] tracking-tighter;

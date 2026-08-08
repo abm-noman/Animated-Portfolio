@@ -10,23 +10,65 @@ Title: Fox's islands
 // import { useFrame, useThree } from '@react-three/fiber'
 // import { a } from '@react-spring/three'
 
+import { a } from "@react-spring/three";
+import { useGLTF } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
+import { useRef } from "react";
 
-import { a } from '@react-spring/three';
-import { useGLTF } from '@react-three/drei';
-import { useRef } from 'react';
+import islandScene from "../assets/3d/island.glb";
 
-import islandScene from '../assets/3d/island.glb';
-
-const Island = (props) => {
-    const islandRef = useRef();
+const Island = ({ isRotating, setRotating, ...props }) => {
+  const islandRef = useRef();
+  const { gl, viewport } = useThree();
   const { nodes, materials } = useGLTF(islandScene);
+  const lastX = useRef(0);
+  const rotationSpeed = useRef(0);
+  const dampingFactor = 0.95;
+
+  const handlePointerDown = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setRotating(true);
+
+    const { clientX } = event.touches
+      ? event.touches[0].clientX
+      : event.clientX;
+
+    lastX.current = clientX;
+  };
+
+  const handlePointerUp = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setRotating(true);
+
+    const { clientX } = event.touches
+      ? event.touches[0].clientX
+      : event.clientX;
+
+    const delta = (clientX - lastX.current) / viewport.width;
+
+    islandRef.current.rotation.y += delta * Math.PI;
+    lastX.current = clientX;
+    rotationSpeed.current = delta * 0.1 * Math.PI; 
+  };
+
+  const handlePointerMove = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (isRotating) {
+      handlePointerUp(event);
+    }
+  };
+
   return (
     <a.group ref={islandRef} {...props}>
       <mesh
         geometry={nodes.polySurface944_tree_body_0.geometry}
         material={materials.PaletteMaterial001}
       />
-      <mesh       
+      <mesh
         geometry={nodes.polySurface945_tree1_0.geometry}
         material={materials.PaletteMaterial001}
       />
@@ -51,7 +93,7 @@ const Island = (props) => {
         material={materials.PaletteMaterial001}
       />
     </a.group>
-  )
-}
+  );
+};
 
-export default Island
+export default Island;
