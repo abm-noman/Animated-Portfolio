@@ -8,53 +8,42 @@ import Sky from "../models/Sky";
 
 const Home = () => {
   const [isRotating, setIsRotating] = useState(false);
+  // currentStage will drive the HomeInfo popups once that component exists
+  const [, setCurrentStage] = useState(1);
 
   const adjustIslandForScreenSize = () => {
-    let screenScale = null;
-    let screenPosition = [0, -6.5, -43];
-    let screenRotation = [0.1, 4.7, 0];
+    const isMobile = window.innerWidth < 768;
 
-    if (window.innerWidth < 768) {
-      screenScale = [0.9, 0.9, 0.9];
-      screenPosition = [0, -6.5, -43];
-      screenRotation = [0.1, 4.7, 0];
-    } else {
-      screenScale = [1, 1, 1];
-    }
+    const screenScale = isMobile ? [0.9, 0.9, 0.9] : [1, 1, 1];
+    const screenPosition = [0, -6.5, -43];
+    const screenRotation = [0.1, 4.7, 0];
 
     return [screenScale, screenPosition, screenRotation];
   };
 
   const adjustPlaneForScreenSize = () => {
-    let planeScale, planePosition;
+    const isMobile = window.innerWidth < 768;
 
-    if (window.innerWidth < 768) {
-      planeScale = [1.5, 1.5, 1.5];
-      planePosition = [0, -1.5, 0];
-    } else {
-      planeScale = [3, 3, 3];
-      planePosition = [0, -4, -4];
-    }
+    const planeScale = isMobile ? [1.5, 1.5, 1.5] : [3, 3, 3];
+    const planePosition = isMobile ? [0, -1.5, 0] : [0, -4, -4];
 
     return [planeScale, planePosition];
   };
 
   const [islandScale, islandPosition, islandRotation] =
     adjustIslandForScreenSize();
-
   const [planeScale, planePosition] = adjustPlaneForScreenSize();
 
   return (
-    <section className="w-full h-screen flex items-center justify-center">
-      {/* <div className="absolute top-28 left-0 right-o z-10 flex items-center justify-center">
+    <section className="w-full h-screen relative">
+      {/* <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
         POPUP
       </div> */}
 
       <Canvas
-        className={
-          "w-full h-screen bg-transparent " +
-          (isRotating ? "cursor-grabbing" : "cursor-grab")
-        }
+        className={`w-full h-screen bg-transparent ${
+          isRotating ? "cursor-grabbing" : "cursor-grab"
+        }`}
         camera={{ near: 0.1, far: 1000, fov: 75, position: [0, 0, 5] }}
       >
         <Suspense fallback={<Loader />}>
@@ -75,22 +64,22 @@ const Home = () => {
           />
 
           <Bird />
-
           <Sky />
 
           <Island
             position={islandPosition}
             scale={islandScale}
-            screenRotation={islandRotation}
+            rotation={islandRotation}
             isRotating={isRotating}
-            setisRotating={setisRotating}
+            setIsRotating={setIsRotating}
+            setCurrentStage={setCurrentStage}
           />
 
           <Plane
-            planePosition={planePosition}
-            planeScale={planeScale}
-            isRotating={isRotating}
+            position={planePosition}
+            scale={planeScale}
             rotation={[0, 20, 0]}
+            isRotating={isRotating}
           />
         </Suspense>
       </Canvas>
