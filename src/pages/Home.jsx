@@ -7,7 +7,7 @@ import Plane from "../models/Plane";
 import Sky from "../models/Sky";
 
 const Home = () => {
-  const [isRotating, setisRotating] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
 
   const adjustIslandForScreenSize = () => {
     let screenScale = null;

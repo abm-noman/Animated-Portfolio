@@ -17,7 +17,7 @@ import { useEffect, useRef } from "react";
 
 import islandScene from "../assets/3d/island.glb";
 
-const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
+const Island = ({ isRotating, setIsRotating, setCurrentStage, ...props }) => {
   const islandRef = useRef();
   const { gl, viewport } = useThree();
   const { nodes, materials } = useGLTF(islandScene);
@@ -28,9 +28,9 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
   const handlePointerDown = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setRotating(true);
+    setIsRotating(true);
 
-    const { clientX } = event.touches
+    const clientX = event.touches
       ? event.touches[0].clientX
       : event.clientX;
 
@@ -40,7 +40,7 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
   const handlePointerUp = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    setRotating(false);
+    setIsRotating(false);
   };
 
   const handlePointerMove = (event) => {
@@ -48,31 +48,31 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
     event.preventDefault();
 
     if (isRotating) {
-      const { clientX } = event.touches
-      ? event.touches[0].clientX
-      : event.clientX;
+      const clientX = event.touches
+        ? event.touches[0].clientX
+        : event.clientX;
 
-    const delta = (clientX - lastX.current) / viewport.width;
+      const delta = (clientX - lastX.current) / viewport.width;
 
-    islandRef.current.rotation.y += delta * 0.01 * Math.PI;
-    lastX.current = clientX;
-    rotationSpeed.current = delta * 0.1 * Math.PI;
+      islandRef.current.rotation.y += delta * 0.01 * Math.PI;
+      lastX.current = clientX;
+      rotationSpeed.current = delta * 0.1 * Math.PI;
     }
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
-      if (!isRotating) setRotating(true);
+      if (!isRotating) setIsRotating(true);
       islandRef.current.rotation.y += 0.01 * Math.PI;
     } else if (event.key === "ArrowRight") {
-      if (!isRotating) setRotating(true);
+      if (!isRotating) setIsRotating(true);
       islandRef.current.rotation.y -= 0.01 * Math.PI;
     }
   };
 
   const handleKeyUp = (event) => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-      setRotating(false);
+      setIsRotating(false);
     }
   };
 
@@ -87,7 +87,7 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
       islandRef.current.rotation.y += rotationSpeed.current;
     } else {
       const rotation = islandRef.current.rotation.y;
-       /**
+      /**
        * Normalize the rotation value to ensure it stays within the range [0, 2 * Math.PI].
        * The goal is to ensure that the rotation value remains within a specific range to
        * prevent potential issues with very large or negative rotation values.
@@ -126,7 +126,6 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
     }
   });
 
-
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener("pointerdown", handlePointerDown);
@@ -142,10 +141,14 @@ const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
-
-
-  
+  }, [
+    gl,
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerMove,
+    handleKeyDown,
+    handleKeyUp,
+  ]);
 
   return (
     <a.group ref={islandRef} {...props}>
