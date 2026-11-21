@@ -9,7 +9,7 @@ import Sky from "../models/Sky";
 const Home = () => {
   const [isRotating, setIsRotating] = useState(false);
   // currentStage will drive the HomeInfo popups once that component exists
-  const [, setCurrentStage] = useState(1);
+  const [currentStage, setCurrentStage] = useState(1);
 
   const adjustIslandForScreenSize = () => {
     const isMobile = window.innerWidth < 768;
